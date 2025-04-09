@@ -10,7 +10,7 @@ MCP server to let LLM take full control on your device by providing screen autom
 
 
 ## Installation
-0. Install python 12
+0. Install python 3.12
 1. Clone the repository:
    ```bash
    git clone https://github.com/Mtehabsim/ScreenPilot.git
