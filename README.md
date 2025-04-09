@@ -44,12 +44,7 @@ venv\Scripts\activate
 }
 
 ```
-## Usage
 
-Run the application:
-```bash
-python main.py
-```
 
 ### Available Tools
 
