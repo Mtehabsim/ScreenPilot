@@ -44,6 +44,17 @@ venv\Scripts\activate
 }
 
 ```
+8. Replace
+    "pathToEnv\\venv\\Scripts\\python.exe" → with the full path to your python.exe
+    "pathToProject\\ScreenPilot\\main.py" → with the full path to your main.py file
+
+9. Save the config file.
+
+10. Open Claude AI Desktop.
+
+11. Go to File → Exit
+
+12. You can now open Claude AI Desktop and enjoy ScreenPilot.
 
 
 ### Available Tools
