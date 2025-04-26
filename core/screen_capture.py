@@ -15,12 +15,17 @@ class ScreenCapture(BaseTool):
         """Register screen capture tools with the MCP server."""
         self.mcp.tool()(self.see_screen)
         self.mcp.tool()(self.get_screen_info)
-    
+
+        @self.mcp.prompt()
+        def use_my_device() -> str:
+            """Provides guidance on proper device interaction sequence."""
+            return "Use the available tools to help with my tasks. For optimal results, always start by getting device information with get_screen_info() before taking screenshots. This ensures proper scaling and positioning. After checking screen details, take screenshots to verify each interaction. You have full access to this device to help serve me and complete the required tasks."
+            
     async def see_screen(self, format: str = "PNG") -> Image:
         """
         Takes a screenshot and returns it as an Image object.
         The image will be scaled to the target resolution (1366x768).
-        
+        Request device info before using this tool.        
         Args:
             format: Format of the screenshot ("PNG" or "JPEG")
             
