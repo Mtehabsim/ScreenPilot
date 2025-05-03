@@ -2,6 +2,7 @@
 
 MCP server to let LLM take full control on your device by providing screen automation toolkit for controlling and interacting with graphical user interfaces. Good for automation, education and having fun.
 
+
 ## Main Features
 
 - 📷 Screen capture and analysis
@@ -9,7 +10,9 @@ MCP server to let LLM take full control on your device by providing screen autom
 - ⌨️ Keyboard input (typing, key presses, hotkeys)
 
 ## watch demo
-[🎥 Watch Demo Video](./Screen%20Pilot.mp4)
+<video width="320" height="240" controls>
+  <source src="Screen%20Pilot.mp4" type="video/mp4">
+</video>
 
 ## Installation
 0. Install python 3.12
