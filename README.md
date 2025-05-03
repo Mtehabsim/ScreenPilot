@@ -10,9 +10,11 @@ MCP server to let LLM take full control on your device by providing screen autom
 - ⌨️ Keyboard input (typing, key presses, hotkeys)
 
 ## watch demo
-<video width="320" height="240" controls>
-  <source src="Screen%20Pilot.mp4" type="video/mp4">
-</video>
+
+
+https://github.com/user-attachments/assets/c18380c0-b3dd-4b7c-925d-28ef205ca11f
+
+
 
 ## Installation
 0. Install python 3.12
