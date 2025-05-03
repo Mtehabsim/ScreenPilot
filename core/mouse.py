@@ -1,12 +1,13 @@
 import pyautogui
 from typing import Dict, Any
 from .base_tool import BaseTool
-
+from utils import scale_coordinates
 
 class Mouse(BaseTool):
 
     def register(self):
         self.mcp.tool()(self.mouse_click)
+        
     
     async def mouse_click(self, x: int, y: int, button: str = "left", clicks: int = 1, 
                           take_screenshot: bool = True, format: str = "PNG") -> Dict[str, Any]:
@@ -25,6 +26,7 @@ class Mouse(BaseTool):
             Dictionary with status message and screenshot if requested
         """
         try:
+            x, y = scale_coordinates(x, y , True)
             pyautogui.moveTo(x, y, duration=0.5)
             pyautogui.click(x=x, y=y, button=button, clicks=clicks)
             
