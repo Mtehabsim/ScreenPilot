@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/mtehabsim-screenpilot-badge.png)](https://mseep.ai/app/mtehabsim-screenpilot)
+
 # ScreenPilot
 
 MCP server to let LLM take full control on your device by providing screen automation toolkit for controlling and interacting with graphical user interfaces. Good for automation, education and having fun.
