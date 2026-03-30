@@ -20,6 +20,10 @@ https://github.com/user-attachments/assets/c18380c0-b3dd-4b7c-925d-28ef205ca11f
 
 
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/mtehabsim-screenpilot).
+
 ## Installation
 0. Install python 3.12
 1. Clone the repository:
