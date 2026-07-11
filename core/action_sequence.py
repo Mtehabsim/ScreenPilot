@@ -2,30 +2,40 @@ import pyautogui
 import time
 from typing import Dict, Any, List
 from .base_tool import BaseTool
+from utils import scale_coordinates, type_text
+from config import MOUSE_MOVE_DURATION, DEFAULT_SCREENSHOT_FORMAT
+from timing import timed_tool
+from perception import capture_when_stable
 
 
 class ActionSequence(BaseTool):
     """
     Provides functionality for performing sequences of actions.
     """
-    
+
     def register(self):
         self.mcp.tool()(self.perform_actions)
-    
-    async def perform_actions(self, actions: List[Dict[str, Any]], take_screenshots: bool = True, 
-                             format: str = "PNG") -> Dict[str, Any]:
+
+    @timed_tool
+    async def perform_actions(self, actions: List[Dict[str, Any]], take_screenshots: bool = True,
+                             format: str = DEFAULT_SCREENSHOT_FORMAT,
+                             settle: bool = False) -> Dict[str, Any]:
         """
         Performs a sequence of mouse and keyboard actions.
-        
+
         Args:
             actions: List of action dictionaries, each containing:
                     - 'type': 'mouse_click', 'keyboard', or 'scroll'
                     - For mouse_click: 'x', 'y', 'button' (optional), 'clicks' (optional)
                     - For keyboard: 'action_type' ('type', 'press', or 'hotkey'), 'value'
                     - For scroll: 'direction', 'amount' (optional)
-            take_screenshots: Whether to take screenshots after each action (default: True)
+            take_screenshots: Whether to take a final screenshot after the batch (default: True)
             format: Format of the screenshots ("PNG" or "JPEG")
-        
+            settle: If True, wait for the screen to STOP changing before the final
+                    screenshot (adaptive) instead of a fixed short delay. Use when
+                    the batch triggers navigation/loading so you get one settled
+                    screenshot and avoid a follow-up "is it done?" round-trip.
+
         Returns:
             Dictionary with results of each action and final screenshot
         """
@@ -55,21 +65,28 @@ class ActionSequence(BaseTool):
                         "message": f"Unknown action type: {action_type}"
                     })
                     continue
-                
-                self.add_delay(0.5)
-            
+
+                self.add_delay()
+
             response = {"results": results}
-            
+
             if take_screenshots:
-                self.add_delay(0.5)
-                screenshot = pyautogui.screenshot()
+                if settle:
+                    # Wait adaptively until the screen stops changing, so the
+                    # single returned screenshot reflects the settled result.
+                    screenshot, info = capture_when_stable(timeout=8.0)
+                    response["settle"] = info
+                else:
+                    # brief fixed settle so the final screenshot reflects the last action
+                    self.add_delay(0.3)
+                    screenshot = self.capture_screenshot()
                 screenshot_obj = self.save_screenshot(
-                    screenshot, 
-                    "actions_sequence", 
+                    screenshot,
+                    "actions_sequence",
                     format
                 )
                 response["screenshot"] = screenshot_obj
-            
+
             return response
             
         except Exception as e:
@@ -85,15 +102,17 @@ class ActionSequence(BaseTool):
         Returns:
             Dictionary with action result
         """
-        x = action["x"]
-        y = action["y"]
+        req_x = action["x"]
+        req_y = action["y"]
         button = action.get("button", "left")
         clicks = action.get("clicks", 1)
-        
-        # Move mouse and click
-        pyautogui.moveTo(x, y, duration=0.3)
+
+        # Coordinates arrive in the scaled image space (same as the mouse_click
+        # tool); convert to physical device pixels before moving/clicking.
+        x, y = scale_coordinates(req_x, req_y, True)
+        pyautogui.moveTo(x, y, duration=MOUSE_MOVE_DURATION)
         pyautogui.click(x=x, y=y, button=button, clicks=clicks)
-        
+
         return {
             "action": "mouse_click",
             "position": {"x": x, "y": y},
@@ -116,7 +135,7 @@ class ActionSequence(BaseTool):
         value = action["value"]
         
         if action_type.lower() == "type":
-            pyautogui.write(value)
+            type_text(value)
         elif action_type.lower() == "press":
             pyautogui.press(value)
         elif action_type.lower() == "hotkey":

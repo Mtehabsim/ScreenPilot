@@ -22,6 +22,9 @@ screens/
 *.log
 logs/
 
+# Timing instrumentation log - generated at runtime
+timings.jsonl
+
 # IDE specific files
 .idea/
 .vscode/

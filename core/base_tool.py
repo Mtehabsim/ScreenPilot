@@ -2,6 +2,9 @@ from abc import ABC
 from typing import Dict, Any, Optional
 from mcp.server.fastmcp import Image
 import time
+import pyautogui
+from config import DEFAULT_DELAY
+from timing import section, mark
 
 
 class BaseTool(ABC):
@@ -9,17 +12,27 @@ class BaseTool(ABC):
     Abstract base class for all screen interaction tools.
     Provides common functionality and defines the interface that all tools must implement.
     """
-    
+
     def __init__(self, mcp_server, screens_dir):
         self.mcp = mcp_server
         self.screens_dir = screens_dir
 
     def register(self):
         pass
-        
+
     @staticmethod
-    def add_delay(seconds: float = 0.5):
-        time.sleep(seconds)
+    def add_delay(seconds: float = DEFAULT_DELAY):
+        if seconds > 0:
+            # Recorded as 'sleep' so fixed settle-time is visible and separable
+            # from real work in the timing breakdown.
+            mark("sleep", seconds * 1000)
+            time.sleep(seconds)
+
+    @staticmethod
+    def capture_screenshot():
+        """Grab the raw screen, timed under the 'capture' section."""
+        with section("capture"):
+            return pyautogui.screenshot()
         
     def save_screenshot(self, screenshot, prefix: str, format: str = "PNG", 
                         extra_info: Optional[str] = None) -> Image:
