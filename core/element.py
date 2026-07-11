@@ -2,17 +2,19 @@ import pyautogui
 import time
 from typing import Dict, Any
 from .base_tool import BaseTool
+from timing import timed_tool
 
 
 class Element(BaseTool):
     """
     Provides functionality for detecting and waiting for elements on screen.
     """
-    
+
     def register(self):
         self.mcp.tool()(self.element_exists)
         self.mcp.tool()(self.wait_for_element)
-    
+
+    @timed_tool
     async def element_exists(self, image_path: str, confidence: float = 0.9) -> Dict[str, Any]:
         """
         Checks if a specific element exists on screen by comparing with an image.
@@ -41,7 +43,8 @@ class Element(BaseTool):
         except Exception as e:
             return self.handle_exception(e, "element detection")
     
-    async def wait_for_element(self, image_path: str, max_wait_seconds: int = 10, 
+    @timed_tool
+    async def wait_for_element(self, image_path: str, max_wait_seconds: int = 10,
                               confidence: float = 0.9) -> Dict[str, Any]:
         """
         Waits for a specific element to appear on screen by comparing with an image.
